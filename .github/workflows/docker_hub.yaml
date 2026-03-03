@@ -1,8 +1,9 @@
-name: create docker image
+name: create_docker_image
 
 on:
-    push:
-        branches: [main]
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -23,7 +24,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          TAGS=${{ github.run_number }}
+          TAGS_RUN=${{ github.run_number }}
+          TAGS=${REF_TAG##*/}
           IMAGE=gitdemo:${TAGS}
-          docker build . -f dockerfile -t joship4/${IMAGE}
+          docker build . -f dockerfile -t joship4/${IMAGE} -t ${TAGS}
           docker push joship4/$IMAGE
