@@ -28,4 +28,4 @@ jobs:
 
       - name: Verify rollout
         run: |
-          kubectl rollout status deployment/my-app -n default
+          kubectl rollout status deployment/my-app-my-github-app-deployment -n default
