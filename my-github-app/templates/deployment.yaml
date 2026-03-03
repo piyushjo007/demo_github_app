@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-github-app.fullname" . }}-deployment
+  labels:
+  {{- include "my-github-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: github-demo-app
+    {{- include "my-github-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: github-demo-app
+      {{- include "my-github-app.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.deployment.githubDemoApp.image.repository }}:{{ .Values.deployment.githubDemoApp.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          failureThreshold: {{ .Values.deployment.githubDemoApp.livenessProbe.failureThreshold }}
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: {{ .Values.deployment.githubDemoApp.livenessProbe.delaySeconds }}
+          periodSeconds: {{ .Values.deployment.githubDemoApp.livenessProbe.periodSeconds }}
+        name: github-demo-app
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          failureThreshold: {{ .Values.deployment.githubDemoApp.readinessProbe.failureThreshold }}
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: {{ .Values.deployment.githubDemoApp.readinessProbe.delaySeconds }}
+          periodSeconds: {{ .Values.deployment.githubDemoApp.readinessProbe.periodSeconds }}
+        resources: {{- toYaml .Values.deployment.githubDemoApp.resources | nindent 10 }}
+        startupProbe:
+          failureThreshold: {{ .Values.deployment.githubDemoApp.startupProbe.failureThreshold }}
+          httpGet:
+            path: /startup
+            port: 8080
+          initialDelaySeconds: {{ .Values.deployment.githubDemoApp.startupProbe.delaySeconds }}
+          periodSeconds: {{ .Values.deployment.githubDemoApp.startupProbe.periodSeconds }}
+      imagePullSecrets:
+      - name: ghcr-secret
+      nodeSelector: {{- toYaml .Values.deployment.nodeSelector | nindent 8 }}
+      serviceAccountName: {{ include "my-github-app.serviceAccountName" . }}
+      tolerations: {{- toYaml .Values.deployment.tolerations | nindent 8 }}
+      topologySpreadConstraints: {{- toYaml .Values.deployment.topologySpreadConstraints
+        | nindent 8 }}

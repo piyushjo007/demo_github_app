@@ -1,0 +1,32 @@
+name: Deploy via Helm
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify helm
+        run: helm version
+
+      - name: Verify cluster
+        run: kubectl get nodes
+
+      - name: Deploy / Upgrade via Helm
+        run: |
+          TAGS=${REF_TAG##*/}
+          helm upgrade --install my-app my-github-app/ \
+            --namespace default \
+            --create-namespace \
+            --set image.tag=7
+
+      - name: Verify rollout
+        run: |
+          kubectl rollout status deployment/my-app -n my-app

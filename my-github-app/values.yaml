@@ -1,0 +1,31 @@
+deployment:
+  githubDemoApp:
+    image:
+      repository: joship4/gitdemo
+      tag: 7
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+    startupProbe:
+      delaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 10
+    livenessProbe:
+      delaySeconds: 30
+      periodSeconds: 5
+      failureThreshold: 10
+    readinessProbe:
+      delaySeconds: 30
+      periodSeconds: 5
+      failureThreshold: 10
+  nodeSelector: {}
+  replicas: 1
+  tolerations: []
+  topologySpreadConstraints: []
+kubernetesClusterDomain: cluster.local
+service:
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: NodePort
