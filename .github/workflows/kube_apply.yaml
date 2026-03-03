@@ -22,8 +22,9 @@ jobs:
 
       - name: Deploy / Upgrade via Helm
         run: |
-          TAGS=${REF_TAG##*/}
-          helm upgrade --install my-app my-github-app/
+          VERSION=${{ github.ref_name }}
+          helm upgrade --install my-app my-github-app/ \
+          --set githubDemoApp.image.tag=$VERSION
 
       - name: Verify rollout
         run: |
