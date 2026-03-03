@@ -25,5 +25,5 @@ jobs:
         run: |
           TAGS=${{ github.run_number }}
           IMAGE=githubDemo:${TAGS}
-          docker build . -f dockerfile --tags ${IMAGE}
+          docker build . -f dockerfile -t ${IMAGE}
           docker push $IMAGE
