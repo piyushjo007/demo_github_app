@@ -24,8 +24,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          TAGS_RUN=${{ github.run_number }}
+          TAGS_RUN=${{ github.ref_name }}
           TAGS=${REF_TAG##*/}
-          IMAGE=gitdemo:${TAGS}
-          docker build . -f dockerfile -t joship4/${IMAGE} -t ${TAGS}
+          IMAGE=gitdemo:${TAGS_RUN}
+          docker build . -f dockerfile -t joship4/${IMAGE} -t ${TAGS_RUN}
           docker push joship4/$IMAGE
