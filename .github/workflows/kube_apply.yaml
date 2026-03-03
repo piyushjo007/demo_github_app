@@ -22,10 +22,7 @@ jobs:
       - name: Deploy / Upgrade via Helm
         run: |
           TAGS=${REF_TAG##*/}
-          helm upgrade --install my-app my-github-app/ \
-            --namespace default \
-            --create-namespace \
-            --set image.tag=7
+          helm upgrade --install my-app my-github-app/
 
       - name: Verify rollout
         run: |
