@@ -1,0 +1,29 @@
+name: create docker image
+
+on:
+    push:
+        branches: [main]
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_CRED }}
+
+
+      - name: Build and push Docker image
+        run: |
+          TAGS=${{ github.run_number }}
+          IMAGE=githubDemo:${TAGS}
+          docker build -f dockerfile --tags ${IMAGE}
+          docker push $IMAGE
