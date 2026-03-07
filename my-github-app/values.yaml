@@ -2,7 +2,7 @@ deployment:
   githubDemoApp:
     image:
       repository: joship4/gitdemo
-      tag: v1.25.38
+      tag: v1.25.39
     resources:
       limits:
         cpu: 500m
