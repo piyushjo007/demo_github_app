@@ -2,5 +2,4 @@ Flask==3.1.2
 jsonify==0.5
 requests==2.32.5
 pytest==8.4.2
-functools
 prometheus_client
